@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login | ICH POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('index');</script>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between text-white overflow-hidden">
+    <div class="bg-image"></div>
+    <div class="w-full p-4 flex justify-between items-center z-20">
+        <div class="flex items-center gap-2 text-green-400 bg-black/40 px-3 py-1 rounded-full">
+            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div><span
+                class="text-[10px] font-bold">ONLINE</span>
+        </div>
+    </div>
+    <div class="flex flex-col items-center justify-center w-full px-4 flex-grow z-20">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-6xl font-bold mb-2 text-orange-500 drop-shadow-xl">Indian Coffee House</h1>
+            <p class="text-lg md:text-2xl font-light text-gray-200">Tallaght, Dublin</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4 w-full max-w-sm md:max-w-4xl">
+            <button onclick="openLoginModal('employee')"
+                class="glass-panel p-6 rounded-2xl hover:bg-orange-600/20 active:scale-95 transition w-full border-l-4 border-transparent hover:border-orange-500">
+                <div class="flex flex-col items-center">
+                    <div class="bg-orange-500 p-3 rounded-full mb-3"><i class="fas fa-utensils text-xl"></i></div>
+                    <h2 class="text-xl font-bold">Employee</h2>
+                </div>
+            </button>
+            <button onclick="openLoginModal('admin')"
+                class="glass-panel p-6 rounded-2xl hover:bg-blue-600/20 active:scale-95 transition w-full border-l-4 border-transparent hover:border-blue-500">
+                <div class="flex flex-col items-center">
+                    <div class="bg-blue-600 p-3 rounded-full mb-3"><i class="fas fa-user-shield text-xl"></i></div>
+                    <h2 class="text-xl font-bold">Admin</h2>
+                </div>
+            </button>
+        </div>
+    </div>
+    <div id="loginModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50 backdrop-blur-md p-4">
+        <div class="bg-white text-gray-800 p-6 rounded-2xl shadow-2xl w-full max-w-sm relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400"><i
+                    class="fas fa-times text-xl"></i></button>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-2 text-center text-orange-600">Login</h2>
+            <div id="login-msg" class="text-center mb-4 text-sm font-bold min-h-[1.5rem]"></div>
+            <form onsubmit="handleLogin(event)">
+                <input type="text" id="inputId"
+                    class="w-full p-3 border rounded-lg mb-4 bg-gray-50 outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="User ID" required>
+                <input type="password" id="inputPass"
+                    class="w-full p-3 border rounded-lg mb-6 bg-gray-50 outline-none focus:ring-2 focus:ring-orange-500"
+                    placeholder="Password" required>
+                <button type="submit" id="loginBtn"
+                    class="w-full bg-orange-600 text-white font-bold py-3.5 rounded-lg shadow-lg active:scale-95">LOGIN</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/index.js"></script>
+</body>
+
+</html>

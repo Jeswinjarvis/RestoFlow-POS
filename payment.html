@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Payment | ICH POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('payment');</script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative">
+
+        <div class="bg-gray-900 p-6 text-white flex justify-between items-center">
+            <h1 class="text-xl font-bold">Checkout</h1>
+            <button onclick="closeOrNavigate()" class="text-gray-400 hover:text-white transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <div class="p-6">
+
+            <div id="order-details" class="mb-6">
+                <p class="text-center text-gray-500 py-4"><i class="fas fa-circle-notch fa-spin"></i> Loading Order...
+                </p>
+            </div>
+
+            <div class="border-t border-gray-200 pt-4 mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span class="font-bold" id="bill-total">€0.00</span>
+                </div>
+                <div class="flex justify-between items-center text-2xl font-bold text-gray-900">
+                    <span>TOTAL</span>
+                    <span id="final-total">€0.00</span>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Payment Method</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="selectMethod('Cash')" id="btn-cash"
+                        class="pay-btn py-3 border rounded-lg hover:bg-green-50 hover:border-green-500 font-bold text-gray-700 transition">
+                        <i class="fas fa-money-bill-wave mb-1 block"></i> Cash
+                    </button>
+                    <button onclick="selectMethod('Card')" id="btn-card"
+                        class="pay-btn py-3 border rounded-lg hover:bg-blue-50 hover:border-blue-500 font-bold text-gray-700 transition">
+                        <i class="fas fa-credit-card mb-1 block"></i> Card
+                    </button>
+                    <button onclick="selectMethod('Online')" id="btn-online"
+                        class="pay-btn py-3 border rounded-lg hover:bg-purple-50 hover:border-purple-500 font-bold text-gray-700 transition">
+                        <i class="fas fa-globe mb-1 block"></i> Online
+                    </button>
+                </div>
+            </div>
+
+            <div id="cash-calculator"
+                class="hidden mb-6 bg-green-50 border border-green-200 rounded-xl p-4 animate-fade-in">
+                <div class="flex justify-between items-center mb-2">
+                    <label class="block text-xs font-bold text-green-700 uppercase">Customer Gave:</label>
+                    <span id="drawer-status"
+                        class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Loading Stock...</span>
+                </div>
+
+                <div id="received-denominations" class="flex flex-wrap gap-2 mb-3 min-h-[30px]">
+                    <span class="text-xs text-gray-400 italic">Tap denominations below...</span>
+                </div>
+
+                <div class="space-y-4 mb-4">
+                    <!-- Notes Section -->
+                    <div>
+                        <div class="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-wider">Notes</div>
+                        <div class="grid grid-cols-5 gap-2">
+                            <button onclick="addReceived(100, '€100 Note', '100')"
+                                class="cash-note note-100">€100</button>
+                            <button onclick="addReceived(50, '€50 Note', '50')" class="cash-note note-50">€50</button>
+                            <button onclick="addReceived(20, '€20 Note', '20')" class="cash-note note-20">€20</button>
+                            <button onclick="addReceived(10, '€10 Note', '10')" class="cash-note note-10">€10</button>
+                            <button onclick="addReceived(5, '€5 Note', '5')" class="cash-note note-5">€5</button>
+                        </div>
+                    </div>
+
+                    <!-- Coins Section -->
+                    <div>
+                        <div class="text-[10px] uppercase font-bold text-gray-400 mb-1 tracking-wider">Coins</div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="addReceived(2, '€2 Coin', '2')"
+                                class="cash-coin coin-gold text-lg">€2</button>
+                            <button onclick="addReceived(1, '€1 Coin', '1')"
+                                class="cash-coin coin-silver text-lg">€1</button>
+                            <button onclick="addReceived(0.50, '50c Coin', '0_50')"
+                                class="cash-coin coin-gold">50c</button>
+                            <button onclick="addReceived(0.20, '20c Coin', '0_20')"
+                                class="cash-coin coin-gold">20c</button>
+                            <button onclick="addReceived(0.10, '10c Coin', '0_10')"
+                                class="cash-coin coin-gold">10c</button>
+                            <button onclick="addReceived(0.05, '5c Coin', '0_05')"
+                                class="cash-coin coin-copper">5c</button>
+                            <button onclick="addReceived(0.02, '2c Coin', '0_02')"
+                                class="cash-coin coin-copper">2c</button>
+                            <button onclick="addReceived(0.01, '1c Coin', '0_01')"
+                                class="cash-coin coin-copper">1c</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 mb-4">
+                    <div class="relative flex-1">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-green-700 font-bold">€</span>
+                        <input type="number" id="cash-given" oninput="calculateChange()"
+                            class="w-full pl-7 pr-3 py-2 rounded-lg border border-green-300 focus:outline-none focus:ring-2 focus:ring-green-500 font-bold text-lg text-gray-800"
+                            placeholder="0.00" readonly>
+                    </div>
+                    <button onclick="clearCash()"
+                        class="bg-red-100 text-red-600 px-3 rounded-lg font-bold hover:bg-red-200 shadow-sm border border-red-200"><i
+                            class="fas fa-trash"></i></button>
+                </div>
+
+                <div id="change-box" class="hidden">
+                    <div class="flex justify-between items-center border-t border-green-200 pt-3">
+                        <span class="text-sm font-bold text-gray-600">Change Due:</span>
+                        <span class="text-xl font-bold text-red-600" id="change-amount">€0.00</span>
+                    </div>
+
+                    <div id="change-breakdown"
+                        class="mt-2 text-xs font-mono text-gray-600 bg-white p-3 rounded border border-green-100 shadow-sm">
+                        Calculating...
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                <div class="flex justify-between items-center mb-3">
+                    <label class="block text-xs font-bold text-gray-500 uppercase">Send Receipt To</label>
+                    <select id="receipt-type" onchange="toggleReceiptInput()"
+                        class="text-xs border border-gray-300 rounded p-1.5 bg-white focus:outline-none focus:border-gray-500 font-bold text-gray-700 cursor-pointer">
+                        <option value="whatsapp" selected>WhatsApp (Text)</option>
+                        <option value="email">Email (PDF)</option>
+                        <option value="none">No Receipt</option>
+                    </select>
+                </div>
+                <div id="input-whatsapp" class="flex gap-2">
+                    <span
+                        class="flex items-center justify-center bg-white border border-gray-300 rounded-lg px-3 font-bold text-gray-600 select-none">+353</span>
+                    <input type="tel" id="customer-phone"
+                        class="flex-1 p-3 border rounded-lg focus:border-green-500 outline-none font-bold text-gray-800"
+                        placeholder="8X XXX XXXX">
+                </div>
+                <div id="input-email" class="hidden">
+                    <input type="email" id="customer-email"
+                        class="w-full p-3 border rounded-lg focus:border-blue-500 outline-none text-gray-800 font-bold"
+                        placeholder="customer@email.com">
+                </div>
+            </div>
+
+            <button onclick="processPayment()" id="pay-btn" disabled
+                class="w-full bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-4 rounded-xl font-bold text-lg shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+                <span>Complete Payment</span> <i class="fas fa-check"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="js/payment.js"></script>
+</body>
+
+</html>

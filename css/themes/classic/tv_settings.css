@@ -1,0 +1,59 @@
+body {
+    font-family: 'Inter', sans-serif;
+    transition: background 0.3s;
+}
+
+.ui-dark {
+    background-color: #0f172a;
+    color: white;
+}
+
+.ui-light {
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* Matching the glass-morphism style from your reference images */
+.card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.ui-light .card {
+    background: white;
+    border-color: #e2e8f0;
+}
+
+.preset-card {
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.preset-card:hover {
+    transform: scale(1.02);
+    border-color: #f97316;
+}
+
+.swatch-box {
+    display: flex;
+    gap: 4px;
+}
+
+.swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #f97316;
+    margin-bottom: 1rem;
+    display: block;
+}

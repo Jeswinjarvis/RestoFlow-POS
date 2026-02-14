@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History | ICH POS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('orderhistory');</script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="config.js"></script>
+</head>
+
+<body class="bg-gray-100 h-screen flex flex-col" onload="initHistory()">
+
+    <header class="bg-gray-900 text-white px-6 py-4 shadow-md flex justify-between items-center shrink-0">
+        <div class="flex items-center gap-4">
+            <button onclick="window.close()"
+                class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center text-gray-400 transition"><i
+                    class="fas fa-arrow-left"></i></button>
+            <h1 class="text-xl font-bold text-orange-500">Order History</h1>
+        </div>
+        <div class="text-xs text-gray-400 font-mono" id="sync-status">Loading Data...</div>
+    </header>
+
+    <div class="p-4 bg-white border-b border-gray-200 shrink-0">
+        <div class="max-w-7xl mx-auto flex flex-col xl:flex-row gap-4 justify-between items-center">
+
+            <div class="flex bg-gray-100 p-1 rounded-lg shrink-0">
+                <button onclick="switchView('orders')" id="btn-orders"
+                    class="px-4 py-2 rounded-md text-sm font-bold shadow-sm active-tab transition">Orders</button>
+                <button onclick="alert('Please select an Order ID from the list first.')" id="btn-details"
+                    class="px-4 py-2 rounded-md text-sm font-bold inactive-tab transition opacity-50 cursor-not-allowed">Order
+                    Details</button>
+            </div>
+
+            <div class="flex flex-wrap gap-2 w-full justify-end items-center">
+
+                <div class="flex items-center gap-2 bg-gray-50 p-1 rounded-lg border border-gray-200">
+                    <span class="text-xs font-bold text-gray-400 pl-2">From</span>
+                    <input type="date" id="date-from" onchange="filterCurrentTable()"
+                        class="bg-transparent text-xs font-bold text-gray-700 outline-none w-28">
+                    <span class="text-gray-300">|</span>
+                    <span class="text-xs font-bold text-gray-400">To</span>
+                    <input type="date" id="date-to" onchange="filterCurrentTable()"
+                        class="bg-transparent text-xs font-bold text-gray-700 outline-none w-28">
+                </div>
+
+                <div class="h-8 w-px bg-gray-200 mx-1 hidden md:block"></div>
+
+                <select id="search-column"
+                    class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block p-2 font-bold outline-none h-10">
+                </select>
+
+                <div class="relative w-48">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"><i
+                            class="fas fa-search text-gray-400"></i></div>
+                    <input type="text" id="search-input" onkeyup="filterCurrentTable()"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full pl-10 p-2 outline-none h-10"
+                        placeholder="Search...">
+                </div>
+
+                <button onclick="loadAllData()"
+                    class="w-10 h-10 flex items-center justify-center bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+                    title="Refresh"><i class="fas fa-sync-alt"></i></button>
+                <button onclick="downloadPDF()"
+                    class="px-4 h-10 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 shadow flex items-center gap-2"
+                    title="Download Report">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-hidden p-6">
+        <div class="max-w-7xl mx-auto bg-white shadow-lg rounded-xl h-full flex flex-col border border-gray-200">
+            <div class="overflow-auto custom-scrollbar flex-1 rounded-t-xl relative">
+
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100 sticky top-0 z-10">
+                        <tr id="table-head"></tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                    <tfoot id="table-foot" class="sticky bottom-0 bg-gray-100 font-bold text-gray-900 hidden"></tfoot>
+                </table>
+
+                <div id="loading-state"
+                    class="absolute inset-0 bg-white flex flex-col items-center justify-center z-20">
+                    <i class="fas fa-circle-notch fa-spin text-4xl text-orange-500 mb-4"></i>
+                    <p class="font-bold text-gray-600">Syncing with Google Sheets...</p>
+                </div>
+                <div id="empty-state"
+                    class="hidden absolute inset-0 bg-white flex flex-col items-center justify-center z-10">
+                    <i class="fas fa-filter text-4xl mb-4 opacity-30"></i>
+                    <p class="text-gray-400">No records found matching filters.</p>
+                </div>
+
+            </div>
+            <div class="p-3 border-t border-gray-200 bg-gray-50 text-xs text-gray-500 flex justify-between">
+                <span id="record-count">0 Records</span>
+                <span id="view-indicator">View: Orders</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/orderhistory.js"></script>
+</body>
+
+</html>

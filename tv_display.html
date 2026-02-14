@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICH | Celebration Display</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Montserrat:wght@400;700;900&display=swap"
+        rel="stylesheet">
+
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('tv_display');</script>
+</head>
+
+<body onload="initTV()">
+    <div class="bg-animate"></div>
+    <div class="flex flex-col h-full w-full p-6 pb-16">
+        <header id="main-header" class="flex justify-between items-center mb-6 z-20 shrink-0">
+            <div>
+                <h1 class="text-5xl font-black tracking-tighter">INDIAN COFFEE HOUSE</h1>
+                <p class="text-[12px] tracking-[0.6em] theme-text uppercase font-bold">Authentic Kerala • Tallaght
+                    Dublin</p>
+            </div>
+            <div id="clock" class="text-4xl font-bold font-mono">00:00</div>
+        </header>
+        <div id="view-port" class="flex-1 w-full overflow-hidden">
+            <div id="menu-wall"></div>
+        </div>
+    </div>
+    <div class="ticker-wrap">
+        <div id="ticker-msg" class="ticker">Welcome!</div>
+    </div>
+
+    <div id="fs-hint"
+        class="fixed top-2 right-2 text-white/20 text-[10px] font-bold uppercase pointer-events-none z-50 animate-pulse">
+        Click for Fullscreen</div>
+
+    <script src="js/tv_display.js"></script>
+</body>
+
+</html>

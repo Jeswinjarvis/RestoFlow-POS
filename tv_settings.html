@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master TV Controller | ICH Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('tv_settings');</script>
+</head>
+
+<body class="ui-dark min-h-screen p-6" id="admin-body">
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center gap-4">
+                <button onclick="closeOrNavigate()" class="text-gray-500 hover:text-orange-500 transition"><i
+                        class="fas fa-arrow-left text-2xl"></i></button>
+                <h1 class="text-3xl font-black italic tracking-tighter uppercase">ICH Event Controller</h1>
+            </div>
+            <div class="flex gap-2 bg-black/40 p-1 rounded-lg">
+                <button onclick="toggleUI('light')"
+                    class="px-3 py-1 text-xs font-bold hover:bg-white/10 rounded transition">LIGHT</button>
+                <button onclick="toggleUI('dark')"
+                    class="px-3 py-1 text-xs font-bold bg-orange-600 rounded transition">DARK</button>
+                <button onclick="openTVDisplay()"
+                    class="px-3 py-1 text-xs font-bold bg-blue-600 rounded transition ml-2"><i
+                        class="fas fa-external-link-alt mr-1"></i> DISPLAY</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <div class="lg:col-span-4 space-y-6">
+
+
+
+
+
+                <div class="card p-6 rounded-2xl shadow-2xl">
+                    <span class="section-label">Custom Paint</span>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-bold opacity-50 block mb-1">ACCENT COLOR</label>
+                            <input type="color" id="accent-color"
+                                class="w-full h-12 rounded-lg cursor-pointer bg-transparent border-none">
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="flex-1">
+                                <label class="text-xs font-bold opacity-50 block mb-1 uppercase">BG Start</label>
+                                <input type="color" id="bg1-color"
+                                    class="w-full h-12 rounded-lg cursor-pointer bg-transparent border-none">
+                            </div>
+                            <div class="flex-1">
+                                <label class="text-xs font-bold opacity-50 block mb-1 uppercase">BG End</label>
+                                <input type="color" id="bg2-color"
+                                    class="w-full h-12 rounded-lg cursor-pointer bg-transparent border-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-2xl shadow-2xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="section-label m-0 text-blue-400">Scroll Text</span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="ticker-toggle" class="sr-only peer" checked
+                                onchange="saveTV(true)">
+                            <div
+                                class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-orange-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all">
+                            </div>
+                        </label>
+                    </div>
+                    <textarea id="ticker-text" rows="3"
+                        class="w-full p-3 rounded-lg bg-black/20 text-sm border border-white/10 outline-none focus:border-orange-500 mb-4"
+                        placeholder="News ticker message..."></textarea>
+                    <button onclick="saveTV()" id="save-btn"
+                        class="w-full bg-orange-600 py-4 rounded-xl font-black text-white shadow-lg hover:bg-orange-700 transition-all flex items-center justify-center gap-2 uppercase tracking-tighter italic">
+                        <i class="fas fa-broadcast-tower"></i> PUSH TO TV
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8 space-y-8">
+                <span class="section-label text-purple-400">Celebration Themes</span>
+                <div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
+
+                    <div onclick="setPreset('#ffffff', '#991b1b', '#000000')"
+                        class="preset-card p-5 rounded-2xl bg-gradient-to-br from-red-800 to-black text-white">
+
+                        <div class="flex justify-between items-center mb-3">
+
+                            <i class="fas fa-snowflake fa-2x text-red-200"></i>
+
+                            <div class="swatch-box">
+                                <div class="swatch bg-white"></div>
+                                <div class="swatch bg-red-700"></div>
+                                <div class="swatch bg-black"></div>
+                            </div>
+
+                        </div>
+
+                        <h3 class="font-black text-lg uppercase leading-none">Christmas Royale</h3>
+
+                        <p class="text-xs opacity-60">Red, Black & White accents</p>
+
+                    </div>
+
+
+
+                    <div onclick="setPreset('#fbbf24', '#14532d', '#000000')"
+                        class="preset-card p-5 rounded-2xl bg-gradient-to-br from-green-900 to-black text-white">
+
+                        <div class="flex justify-between items-center mb-3">
+
+                            <i class="fas fa-shamrock fa-2x text-green-400"></i>
+
+                            <div class="swatch-box">
+                                <div class="swatch bg-[#fbbf24]"></div>
+                                <div class="swatch bg-green-800"></div>
+                                <div class="swatch bg-black"></div>
+                            </div>
+
+                        </div>
+
+                        <h3 class="font-black text-lg uppercase leading-none">St. Paddy's Day</h3>
+
+                        <p class="text-xs opacity-60">Irish Green & Golden Luck</p>
+
+                    </div>
+
+
+
+                    <div onclick="setPreset('#ffffff', '#4c1d95', '#000000')"
+                        class="preset-card p-5 rounded-2xl bg-gradient-to-br from-purple-900 via-pink-900 to-black text-white">
+
+                        <div class="flex justify-between items-center mb-3">
+
+                            <i class="fas fa-rainbow fa-2x"></i>
+
+                            <div class="swatch-box">
+                                <div class="swatch bg-red-500"></div>
+                                <div class="swatch bg-yellow-400"></div>
+                                <div class="swatch bg-blue-500"></div>
+                            </div>
+
+                        </div>
+
+                        <h3 class="font-black text-lg uppercase leading-none">Pride Celebration</h3>
+
+                        <p class="text-xs opacity-60">Vibrant Purple & Rainbow vibe</p>
+
+                    </div>
+
+
+
+                    <div onclick="setPreset('#ffffff', '#ff9933', '#138808')"
+                        class="preset-card p-5 rounded-2xl bg-gradient-to-br from-orange-500 via-white to-green-600 text-black">
+
+                        <div class="flex justify-between items-center mb-3">
+
+                            <i class="fas fa-dharmachakra fa-2x text-blue-800"></i>
+
+                            <div class="swatch-box">
+                                <div class="swatch bg-[#ff9933]"></div>
+                                <div class="swatch bg-white border"></div>
+                                <div class="swatch bg-[#138808]"></div>
+                            </div>
+
+                        </div>
+
+                        <h3 class="font-black text-lg uppercase leading-none">Patriotic Saffron</h3>
+
+                        <p class="text-xs opacity-60">Indian National Colors</p>
+
+                    </div>
+
+
+
+                    <div onclick="setPreset('#166534', '#fde047', '#ffffff')"
+                        class="preset-card p-5 rounded-2xl bg-gradient-to-br from-yellow-300 to-white text-green-900 shadow-inner">
+
+                        <div class="flex justify-between items-center mb-3">
+
+                            <i class="fas fa-leaf fa-2x"></i>
+
+                            <div class="swatch-box">
+                                <div class="swatch bg-green-700"></div>
+                                <div class="swatch bg-yellow-400"></div>
+                            </div>
+
+                        </div>
+
+                        <h3 class="font-black text-lg uppercase leading-none">Onam Harvest</h3>
+
+                        <p class="text-xs opacity-60">Traditional Kerala Yellow</p>
+
+                    </div>
+
+
+
+                    <div onclick="setPreset('#22d3ee', '#0f172a', '#000000')"
+                        class="preset-card p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-black text-white">
+
+                        <div class="flex justify-between items-center mb-3">
+
+                            <i class="fas fa-bolt fa-2x text-cyan-400"></i>
+
+                            <div class="swatch-box">
+                                <div class="swatch bg-cyan-400"></div>
+                                <div class="swatch bg-slate-900"></div>
+                            </div>
+
+                        </div>
+
+                        <h3 class="font-black text-lg uppercase leading-none">Midnight Neon</h3>
+
+                        <p class="text-xs opacity-60">Modern Night Life vibe</p>
+
+                    </div>
+
+
+
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <script src="js/tv_settings.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cash Sorting | Indian Coffee House</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('cashsorting');</script>
+
+    <script>
+        const token = localStorage.getItem("ich_auth_token");
+        if (!token) window.location.href = "index.html";
+    </script>
+</head>
+
+<body class="bg-[#E5E7EB] h-[100dvh] w-full flex flex-col overflow-hidden text-gray-900" onload="initCashSort()">
+
+    <header
+        class="bg-[#1F2937] text-white px-4 py-3 shadow-md flex justify-between items-center shrink-0 z-30 h-16 w-full">
+        <div class="flex items-center gap-4">
+            <a onclick="closeOrNavigate(); return false;" href="#"
+                class="text-gray-400 hover:text-white transition p-2 -ml-2"><i
+                    class="fas fa-arrow-left text-xl"></i></a>
+            <h1 class="text-xl font-bold tracking-wide">Cash Sorting</h1>
+        </div>
+        <div class="flex items-center gap-2">
+            <div id="sync-status" class="text-[10px] uppercase font-bold text-gray-500 bg-gray-800 px-2 py-1 rounded">
+                Loading...</div>
+            <div class="text-xs md:text-sm text-gray-400 font-medium" id="current-date"></div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto custom-scroll p-3 md:p-6 w-full relative">
+        <div class="max-w-6xl mx-auto pb-32">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+                    <div
+                        class="bg-blue-50 px-4 py-3 border-b border-blue-100 flex justify-between items-center sticky top-0 z-10">
+                        <h2 class="font-bold text-blue-800 text-lg flex items-center gap-2"><i
+                                class="fas fa-money-bill-wave"></i> Notes</h2>
+                        <span class="text-blue-600 font-bold text-xl font-mono" id="total-notes-display">€0.00</span>
+                    </div>
+                    <div class="p-3 md:p-5 space-y-3" id="notes-container"></div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+                    <div
+                        class="bg-orange-50 px-4 py-3 border-b border-orange-100 flex justify-between items-center sticky top-0 z-10">
+                        <h2 class="font-bold text-orange-800 text-lg flex items-center gap-2"><i
+                                class="fas fa-coins"></i> Coins</h2>
+                        <span class="text-orange-600 font-bold text-xl font-mono" id="total-coins-display">€0.00</span>
+                    </div>
+                    <div class="p-3 md:p-5 space-y-3" id="coins-container"></div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer
+        class="bg-white border-t border-gray-200 p-4 fixed bottom-0 left-0 w-full z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">
+
+            <div class="w-full md:w-auto flex justify-between md:block items-center">
+                <div class="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest font-bold mb-0.5">Grand Total
+                </div>
+                <div class="text-3xl md:text-4xl font-bold text-gray-900 leading-none" id="grand-total">€0.00</div>
+            </div>
+
+            <div class="flex gap-3 w-full md:w-auto">
+                <button onclick="resetForm()"
+                    class="flex-1 md:flex-none px-6 py-3 rounded-lg border-2 border-gray-200 text-gray-600 font-bold hover:bg-gray-50 hover:border-gray-300 transition text-sm uppercase tracking-wide">
+                    Reset
+                </button>
+                <button onclick="saveCashReport()"
+                    class="flex-[2] md:flex-none px-8 py-3 rounded-lg bg-green-600 text-white font-bold shadow-md hover:bg-green-700 hover:shadow-lg transition flex items-center justify-center gap-2 text-sm uppercase tracking-wide">
+                    <i class="fas fa-save"></i> Save / Update
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/cashsorting.js"></script>
+</body>
+
+</html>

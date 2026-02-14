@@ -1,0 +1,381 @@
+/* =========================================
+   Dashtreme Glossy Design Styles
+   ========================================= */
+
+/* -----------------------------------------
+   1. CORE THEME & TYPOGRAPHY
+   ----------------------------------------- */
+
+body.glossy-theme {
+    font-family: 'Inter', sans-serif;
+    color: rgba(255, 255, 255, 0.85);
+    background-color: #000;
+}
+
+/* Headings & Text Colors */
+/* Using .glossy-theme parent selector grants enough specificity to override Tailwind utility classes */
+.glossy-theme h1,
+.glossy-theme h2,
+.glossy-theme h3,
+.glossy-theme h4,
+.glossy-theme h5,
+.glossy-theme h6,
+.glossy-theme .text-gray-900,
+.glossy-theme .text-gray-800,
+.glossy-theme .text-gray-700 {
+    color: white;
+}
+
+.glossy-theme .text-gray-600,
+.glossy-theme .text-gray-500,
+.glossy-theme .text-gray-400 {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.glossy-theme .text-\[\#F97316\] {
+    color: white;
+}
+
+
+/* -----------------------------------------
+   2. BACKGROUND THEMES
+   ----------------------------------------- */
+
+.bg-theme {
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background .3s;
+}
+
+.bg-theme1 {
+    background-image: url('../assets/images/bg-themes/1.png');
+}
+
+.bg-theme2 {
+    background-image: url('../assets/images/bg-themes/2.png');
+}
+
+.bg-theme3 {
+    background-image: url('../assets/images/bg-themes/3.png');
+}
+
+.bg-theme4 {
+    background-image: url('../assets/images/bg-themes/4.png');
+}
+
+.bg-theme5 {
+    background-image: url('../assets/images/bg-themes/5.png');
+}
+
+.bg-theme6 {
+    background-image: url('../assets/images/bg-themes/6.png');
+}
+
+/* Gradient Themes */
+.bg-theme7 {
+    background-image: linear-gradient(45deg, #0c675e, #069e90);
+}
+
+.bg-theme8 {
+    background-image: linear-gradient(567deg, rgba(165, 42, 4, 0.89), rgba(113, 102, 8, 0.89), rgba(13, 95, 16, 0.93), rgba(4, 79, 88, 0.94), rgba(19, 56, 86, 0.9), rgba(24, 32, 78, 0.94), rgba(100, 8, 115, 0.95));
+}
+
+.bg-theme9 {
+    background-image: linear-gradient(45deg, #29323c, #485563);
+}
+
+.bg-theme10 {
+    background-image: linear-gradient(45deg, #795548, #945c48);
+}
+
+.bg-theme11 {
+    background-image: linear-gradient(45deg, #1565C0, #1E88E5);
+}
+
+.bg-theme12 {
+    background-image: linear-gradient(45deg, #65379b, #886aea);
+}
+
+.bg-theme13 {
+    background-image: linear-gradient(180deg, #ff5447, #f1076f);
+}
+
+.bg-theme14 {
+    background-image: linear-gradient(180deg, #08a50e, #69bb03);
+}
+
+.bg-theme15 {
+    background-image: linear-gradient(45deg, #6a11cb, #2575fc);
+}
+
+
+/* -----------------------------------------
+   3. LAYOUT & CONTAINERS (Translucency)
+   ----------------------------------------- */
+
+/* Main Containers */
+.glossy-theme .card,
+.glossy-theme .header,
+.glossy-theme .footer,
+.glossy-theme .modal-content,
+.glossy-theme .sidebar-wrapper,
+.glossy-theme #sidebar,
+.glossy-theme #left-sidebar,
+.glossy-theme #order-panel {
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+/* Specific Layout Overrides */
+.glossy-theme #left-sidebar,
+.glossy-theme #order-panel {
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glossy-theme header {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Background Utility Overrides (Translucent) */
+.glossy-theme .bg-white,
+.glossy-theme .bg-gray-50,
+.glossy-theme .bg-gray-100,
+.glossy-theme .bg-gray-200,
+.glossy-theme .bg-gray-300,
+.glossy-theme .bg-\[\#E5E7EB\],
+.glossy-theme .bg-\[\#1F2937\],
+.glossy-theme .bg-\[\#111827\],
+.glossy-theme .bg-\[\#F3F4F6\],
+.glossy-theme .bg-\[\#F97316\] {
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Border Utility Overrides */
+.glossy-theme .border-gray-200,
+.glossy-theme .border-gray-300,
+.glossy-theme .border-gray-100 {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+
+/* -----------------------------------------
+   4. UI COMPONENTS (Inputs, Buttons, Cards)
+   ----------------------------------------- */
+
+/* Inputs & Forms */
+.glossy-theme input,
+.glossy-theme select,
+.glossy-theme textarea {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.glossy-theme input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Cards (Table/Grid Items) */
+.glossy-theme .shadow-sm {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.glossy-theme .rounded-xl.border {
+    border-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Active/Selected Items (Orange Highlight) */
+.glossy-theme .border-orange-500.bg-orange-50 {
+    background-color: rgba(249, 115, 22, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    box-shadow: 0px 0px 9px 3px rgba(255, 131, 41, 0.8);
+}
+
+.glossy-theme .border-orange-500.bg-orange-50 .text-gray-700,
+.glossy-theme .border-orange-500.bg-orange-50 .text-gray-400 {
+    color: white;
+}
+
+/* Toggle Buttons (Dining/Takeaway) */
+.glossy-theme #btn-mode-table.bg-white,
+.glossy-theme #btn-mode-takeaway.bg-white {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    box-shadow: 0px 0px 9px 3px rgba(255, 131, 41, 0.8);
+}
+
+.glossy-theme #btn-mode-table:not(.bg-white),
+.glossy-theme #btn-mode-takeaway:not(.bg-white) {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Category Tabs (Active State) */
+.glossy-theme #category-tabs button.bg-orange-500,
+.glossy-theme #daily-category-tabs button.bg-orange-500,
+.glossy-theme #config-category-tabs button.bg-orange-500 {
+    box-shadow: inset 0px 0px 20px 6px rgba(255, 131, 41, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glossy-theme #category-tabs button.bg-white,
+.glossy-theme #daily-category-tabs button.bg-white,
+.glossy-theme #config-category-tabs button.bg-white {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Active Sidebar Links */
+.glossy-theme .nav-item[class*="bg-[#F97316]"] {
+    box-shadow: 0px 0px 9px 3px rgba(255, 131, 41, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Specific Buttons */
+.glossy-theme button .fa-search {
+    color: white;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.glossy-theme button[onclick="togglePOSSearch()"] {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glossy-theme #place-order-btn {
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.glossy-theme #place-order-btn:disabled {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+
+/* -----------------------------------------
+   5. INTERACTIVE & HOVER EFFECTS
+   ----------------------------------------- */
+
+.glossy-theme .nav-item:hover,
+.glossy-theme #category-tabs button:hover,
+.glossy-theme #daily-category-tabs button:hover,
+.glossy-theme #config-category-tabs button:hover,
+.glossy-theme #btn-mode-table:hover,
+.glossy-theme #btn-mode-takeaway:hover,
+.glossy-theme button[onclick="togglePOSSearch()"]:hover,
+.glossy-theme #place-order-btn:hover:not(:disabled) {
+    box-shadow: inset 0px 0px 9px 3px rgba(255, 131, 41, 0.8);
+    transition: all 0.3s ease;
+}
+
+
+/* -----------------------------------------
+   6. SCROLLBARS & UTILITIES
+   ----------------------------------------- */
+
+.glossy-theme ::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+}
+
+.glossy-theme ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.glossy-theme ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+
+/* -----------------------------------------
+   7. THEME SWITCHER SIDEBAR
+   ----------------------------------------- */
+
+.right-sidebar {
+    width: 260px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: -260px;
+    z-index: 1000;
+    background: #000;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    transition: right .3s ease;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.right-sidebar.open {
+    right: 0;
+}
+
+.switcher-icon {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    background: #000;
+    text-align: center;
+    font-size: 22px;
+    color: #fff;
+    cursor: pointer;
+    position: fixed;
+    right: 0;
+    top: 40%;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    transition: right .3s ease;
+}
+
+.right-sidebar.open+.switcher-icon,
+.switcher-icon.open {
+    right: 260px;
+}
+
+.switcher-title {
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.switcher-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-left: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.switcher-list li {
+    width: 85px;
+    height: 75px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 0 solid transparent;
+    margin: 0 15px 15px 0;
+    background-size: 100% 100%;
+    background-position: center;
+}
+
+.switcher-list li:hover {
+    opacity: 0.8;
+}

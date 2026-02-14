@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Indian Coffee House</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="config.js"></script>
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('settings');</script>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden">
+
+        <div class="bg-gray-900 p-6 flex justify-between items-center text-white">
+            <h1 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-cog"></i> Settings</h1>
+            <a onclick="closeOrNavigate(); return false;" href="#" class="text-gray-400 hover:text-white transition"><i
+                    class="fas fa-times text-lg"></i></a>
+        </div>
+
+        <div class="p-6">
+
+            <div class="flex items-center justify-between mb-8 border-b pb-6">
+                <div>
+                    <h2 class="font-bold text-gray-800">Order Notification Sound</h2>
+                    <p class="text-xs text-gray-500">Play a sound when a new order arrives.</p>
+                </div>
+
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="sound-toggle" class="sr-only peer">
+                    <div
+                        class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500">
+                    </div>
+                </label>
+            </div>
+
+            <div class="mb-8" id="sound-options">
+                <h2 class="text-sm font-bold text-gray-500 uppercase mb-4">Sound Selection</h2>
+
+                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg border border-gray-200 mb-4">
+                    <div class="text-sm font-bold text-gray-600">Current Tone</div>
+                    <button onclick="previewSound()"
+                        class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 hover:bg-orange-200 flex items-center justify-center shadow-sm transition">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <button onclick="selectPreset('bell')"
+                        class="preset-btn p-3 border rounded-lg hover:border-orange-500 text-sm font-medium text-gray-600 transition text-left">🔔
+                        Classic Bell</button>
+                    <button onclick="selectPreset('ding')"
+                        class="preset-btn p-3 border rounded-lg hover:border-orange-500 text-sm font-medium text-gray-600 transition text-left">🛎️
+                        Ding Dong</button>
+                    <button onclick="selectPreset('beep')"
+                        class="preset-btn p-3 border rounded-lg hover:border-orange-500 text-sm font-medium text-gray-600 transition text-left">📟
+                        Digital Beep</button>
+                    <button onclick="selectPreset('chime')"
+                        class="preset-btn p-3 border rounded-lg hover:border-orange-500 text-sm font-medium text-gray-600 transition text-left">✨
+                        Soft Chime</button>
+                </div>
+
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Custom URL</label>
+                <input type="text" id="custom-url" placeholder="https://example.com/sound.mp3"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:border-orange-500 outline-none text-sm mb-2">
+            </div>
+
+            <button onclick="saveSettings()"
+                class="w-full bg-gray-900 text-white py-3 rounded-lg font-bold shadow-lg hover:bg-black transition transform active:scale-95 mb-8">
+                Save Configuration
+            </button>
+
+            <div class="border-t border-gray-200 pt-8 mt-8">
+                <h2 class="text-sm font-bold text-red-600 uppercase mb-4 tracking-wider"><i
+                        class="fas fa-exclamation-triangle mr-2"></i>System Operations</h2>
+                <div class="bg-red-50 border border-red-100 p-4 rounded-xl">
+                    <h3 class="font-bold text-gray-800 text-sm mb-1">End of Day Reset</h3>
+                    <p class="text-xs text-gray-500 mb-4">Clears all tables and resets splits. Use only after closing.
+                    </p>
+                    <button onclick="resetTables()"
+                        class="w-full py-3 bg-white border border-red-200 text-red-600 hover:bg-red-600 hover:text-white rounded-lg font-bold shadow-sm transition">
+                        Reset Floor Plan
+                    </button>
+                    <div id="reset-msg" class="text-center mt-2 text-xs font-bold text-green-600 hidden"></div>
+                </div>
+            </div>
+
+            <div class="text-center mt-6">
+                <a onclick="closeOrNavigate(); return false;" href="#"
+                    class="text-sm font-bold text-gray-400 hover:text-gray-600"><i class="fas fa-arrow-left mr-1"></i>
+                    Back to POS</a>
+            </div>
+
+        </div>
+    </div>
+
+    <audio id="audio-player"></audio>
+
+    <script src="js/settings.js"></script>
+</body>
+
+</html>

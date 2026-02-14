@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICH | Glass Bento Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Montserrat:wght@300;400;600;800&display=swap"
+        rel="stylesheet">
+
+    <script src="js/theme-manager.js"></script>
+    <script>ThemeManager.init('testing');</script>
+</head>
+
+<body class="p-6">
+
+    <header class="flex justify-between items-end px-4 mb-4">
+        <div>
+            <h1 class="font-['Oswald'] text-4xl font-bold tracking-tighter leading-none">
+                INDIAN <span class="text-red-600">COFFEE</span> HOUSE
+            </h1>
+            <p class="text-[10px] tracking-[0.4em] opacity-40 uppercase font-bold">Tallaght Edition</p>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div id="clock" class="text-4xl font-extralight tracking-widest">00:00</div>
+            <div class="h-8 w-px bg-white/20"></div>
+            <div id="date" class="text-xs font-bold text-red-500 uppercase">---</div>
+        </div>
+    </header>
+
+    <div id="menu-grid"></div>
+
+    <script>
+        const db = firebase.database();
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('date').innerText = now.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        db.ref('menu_settings').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            const container = document.getElementById('menu-grid');
+            container.innerHTML = '';
+
+            const grouped = {};
+            Object.values(data).forEach(item => {
+                if (!grouped[item.category]) grouped[item.category] = [];
+                grouped[item.category].push(item);
+            });
+
+            Object.keys(grouped).forEach((cat, index) => {
+                let html = `
+                    <div class="glass-panel p-4 zoom-in" style="animation-delay: ${index * 0.05}s">
+                        <h2 class="category-header"><i class="fas fa-certificate text-xs mr-2"></i>${cat}</h2>
+                        <div class="flex flex-col">
+                            ${grouped[cat].map(item => `
+                                <div class="item-row">
+                                    <span class="text-sm font-semibold tracking-tight truncate mr-2">${item.name}</span>
+                                    <span class="price-tag text-sm">€${item.price}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        });
+    </script>
+</body>
+
+</html>

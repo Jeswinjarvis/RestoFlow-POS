@@ -1,0 +1,76 @@
+body {
+    font-family: 'Inter', sans-serif;
+    display: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* HARDWARE ACCELERATION FOR SMOOTHNESS */
+.drawer,
+.submenu,
+.nav-link,
+canvas,
+.section-view {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+}
+
+/* FLUID SIDEBAR ANIMATION (Spring Effect) */
+.drawer {
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.drawer-open {
+    transform: translateX(0);
+}
+
+.drawer-closed {
+    transform: translateX(-100%);
+}
+
+/* SMOOTH SUBMENU ACCORDION */
+.submenu {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease-out;
+}
+
+.submenu.open {
+    max-height: 300px;
+    opacity: 1;
+}
+
+/* ACTIVE LINK GLOW */
+.nav-link {
+    transition: all 0.2s ease-out;
+}
+
+.nav-link.active {
+    background-color: #EA580C;
+    color: white;
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+    transform: scale(1.02);
+}
+
+.nav-link:hover:not(.active) {
+    background-color: #1F2937;
+    color: #F97316;
+    transform: translateX(4px);
+}
+
+/* SECTION ENTRY ANIMATION (Fade Up) */
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

@@ -1,0 +1,166 @@
+body {
+    display: none;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Grid Areas */
+.table-grid-area {
+    display: grid;
+    gap: 1rem;
+    padding-bottom: 100px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "T1 T2" "T3 T4" "T5 T6";
+}
+
+@media (min-width: 768px) {
+    .table-grid-area {
+        gap: 1.5rem;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: repeat(2, minmax(220px, 1fr));
+        grid-template-areas: "T1 T2 T5" "T3 T4 T6";
+    }
+}
+
+#area-T1 {
+    grid-area: T1;
+}
+
+#area-T2 {
+    grid-area: T2;
+}
+
+#area-T3 {
+    grid-area: T3;
+}
+
+#area-T4 {
+    grid-area: T4;
+}
+
+#area-T5 {
+    grid-area: T5;
+}
+
+#area-T6 {
+    grid-area: T6;
+}
+
+/* Mobile Drawer Transitions */
+.drawer {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drawer-closed-left {
+    transform: translateX(-100%);
+}
+
+.drawer-closed-right {
+    transform: translateX(100%);
+}
+
+.drawer-open {
+    transform: translateX(0);
+}
+
+/* Desktop Sidebar Transitions (YouTube Style) */
+@media (min-width: 768px) {
+    #left-sidebar {
+        transform: translateX(0) !important;
+        /* Always visible on desktop */
+        width: 5rem;
+        /* Default collapsed width (w-20) */
+        transition: width 0.3s ease-in-out;
+    }
+
+    #left-sidebar.sidebar-expanded {
+        width: 18rem;
+        /* Expanded width (w-72) */
+    }
+
+    /* Hide text labels when collapsed */
+    #left-sidebar:not(.sidebar-expanded) .nav-label {
+        display: none;
+        opacity: 0;
+    }
+
+    #left-sidebar.sidebar-expanded .nav-label {
+        display: block;
+        opacity: 1;
+        animation: fadeIn 0.3s;
+    }
+
+    /* Center icons when collapsed */
+    #left-sidebar:not(.sidebar-expanded) .nav-item {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    #left-sidebar:not(.sidebar-expanded) .section-title {
+        display: none;
+    }
+
+    /* Adjust main content margin based on sidebar state */
+    main {
+        margin-left: 5rem;
+        transition: margin-left 0.3s ease-in-out;
+    }
+
+    body.sidebar-open main {
+        margin-left: 18rem;
+    }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.accordion-content {
+    transition: max-height 0.3s ease-in-out;
+    overflow: hidden;
+    max-height: 0;
+}
+
+.accordion-open {
+    max-height: 5000px;
+}
+
+.split-anim {
+    animation: popIn 0.3s ease-out;
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Order Panel Desktop Override */
+@media (min-width: 768px) {
+    #order-panel.drawer-closed-right {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    #order-panel {
+        transform: translateY(0);
+        opacity: 1;
+        transition: all 0.3s ease-in-out;
+    }
+}
