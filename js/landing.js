@@ -20,6 +20,8 @@ let lastTotalItemCount = 0;
 let isFirstLoad = true;
 let clickTimer = null;
 let serveClickTimer = null;
+let menuSyncInProgress = false;
+let dailyResetChecked = false;
 
 let isMobileCartOpen = false;
 
@@ -32,12 +34,99 @@ function initPOS() {
     document.body.style.display = 'flex';
     const savedRing = localStorage.getItem("ich_ring_sound") || "https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3";
     const audio = document.getElementById('notification-sound');
-    audio.src = savedRing;
+    if (audio) audio.src = savedRing;
 
     document.addEventListener('click', enableAudio, { once: true });
 }
 
+async function enableAudio() {
+    const audio = document.getElementById('notification-sound');
+    if (!audio || localStorage.getItem("ich_ring_enabled") === 'false') return;
+
+    try {
+        audio.muted = true;
+        await audio.play();
+        audio.pause();
+        audio.currentTime = 0;
+        audio.muted = false;
+        document.getElementById('sound-warning')?.classList.add('hidden');
+    } catch (error) {
+        audio.muted = false;
+        console.warn("Audio could not be enabled yet:", error);
+    }
+}
+
 window.onload = initPOS;
+
+function normalizeMenuSettings(items) {
+    return items.reduce((settings, item) => {
+        const id = item.id || String(item.name || '')
+            .replace(/[^a-zA-Z0-9]/g, '_')
+            .toLowerCase();
+
+        if (!id) return settings;
+
+        settings[id] = {
+            ...item,
+            id,
+            type: item.type || 'Default',
+            days: item.days === undefined ? '0,1,2,3,4,5,6' : String(item.days),
+            count: item.count === undefined ? -1 : Number(item.count)
+        };
+        return settings;
+    }, {});
+}
+
+function applyMenuSettings(settings, { checkReset = true } = {}) {
+    globalSettings = Object.values(settings || {});
+    filterMenuConfig();
+    renderDailyList();
+    renderPOSMenu('All');
+    renderCategoryTabs();
+    renderDailyCategoryTabs();
+    renderConfigCategoryTabs();
+
+    if (checkReset && !dailyResetChecked && globalSettings.length > 0) {
+        dailyResetChecked = true;
+        checkDailyReset(true);
+    }
+}
+
+async function requestMenuSettingsFromBackend() {
+    const response = await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+            action: "GET_MENU_SETTINGS",
+            apiKey: API_SECRET
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`Menu request failed with status ${response.status}`);
+    }
+
+    const result = await response.json();
+    if (result.status !== "SUCCESS" || !Array.isArray(result.data)) {
+        throw new Error(result.message || "The backend returned an invalid menu response");
+    }
+
+    const settings = normalizeMenuSettings(result.data);
+    if (Object.keys(settings).length === 0) {
+        throw new Error("The backend returned no menu items");
+    }
+
+    return settings;
+}
+
+async function syncMenuSettingsFromBackend() {
+    const settings = await requestMenuSettingsFromBackend();
+
+    // Render immediately so the POS still works if Firebase persistence is delayed.
+    applyMenuSettings(settings, { checkReset: false });
+    await db.ref('menu_settings').set(settings);
+    return settings;
+}
 
 db.ref(".info/connected").on("value", snap => {
     const el = document.getElementById('connection-status');
@@ -54,14 +143,26 @@ db.ref('tables').on('value', snap => { tableData = snap.val() || {}; document.ge
     console.error("Tables Read Error:", err);
     document.getElementById('loading-overlay').innerHTML = `<div class="text-center text-red-500 font-bold"><i class="fas fa-exclamation-triangle text-3xl mb-2"></i><br>Database Error:<br>${err.message}</div>`;
 });
-db.ref('menu_settings').on('value', snap => {
-    globalSettings = snap.val() ? Object.values(snap.val()) : [];
-    filterMenuConfig(); // Fixed: Re-apply current filter instead of resetting to all
-    renderDailyList();
-    renderPOSMenu('All');
-    renderCategoryTabs();
-    renderDailyCategoryTabs();
-    renderConfigCategoryTabs();
+db.ref('menu_settings').on('value', async snap => {
+    const settings = snap.val();
+
+    if (!settings && !menuSyncInProgress) {
+        menuSyncInProgress = true;
+        try {
+            await syncMenuSettingsFromBackend();
+        } catch (error) {
+            console.error("Menu Sync Error:", error);
+            const menuGrid = document.getElementById('pos-menu-grid');
+            if (menuGrid) {
+                menuGrid.innerHTML = '<div class="col-span-full p-6 text-center text-red-600 font-bold">Unable to load the menu. Check the backend connection and try Sync again.</div>';
+            }
+        } finally {
+            menuSyncInProgress = false;
+        }
+        return;
+    }
+
+    applyMenuSettings(settings || {});
 }, err => console.error("Menu Read Error:", err));
 
 db.ref('orders').on('value', snap => {
@@ -100,7 +201,6 @@ db.ref('orders').on('value', snap => {
 });
 
 document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('en-IE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-checkDailyReset(true);
 
 // --- MOBILE CART TOGGLE ---
 function toggleMobileCart() {
@@ -878,7 +978,17 @@ function updateNavState(viewId) {
 }
 
 function showView(id) { document.querySelectorAll('.view-section').forEach(e => e.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if (window.innerWidth < 768) toggleSidebar(); }
-function fetchSettingsFromSheet() { if (confirm("Sync?")) fetch(APPS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "GET_MENU_SETTINGS" }) }).then(r => r.json()).then(d => { if (d.status === "SUCCESS") { const u = {}; d.data.forEach(i => { if (!i.id) i.id = i.name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase(); if (!i.type) i.type = 'Default'; if (i.days === undefined) i.days = '0,1,2,3,4,5,6'; if (i.count === undefined) i.count = -1; u[i.id] = i; }); db.ref('menu_settings').set(u); alert("Synced!"); } }); }
+async function fetchSettingsFromSheet() {
+    if (!confirm("Sync menu settings from the backend?")) return;
+
+    try {
+        await syncMenuSettingsFromBackend();
+        alert("Menu synced successfully!");
+    } catch (error) {
+        console.error("Manual Menu Sync Error:", error);
+        alert("Menu sync failed. Please check the backend connection and try again.");
+    }
+}
 function saveSettingsToSheet() { fetch(APPS_SCRIPT_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: "SAVE_MENU_SETTINGS", settings: globalSettings }) }).then(() => alert("Saved!")); }
 function checkDailyReset(s) { db.ref('system/last_reset').once('value', p => { const t = new Date().toDateString(); if (p.val() !== t) { if (!s) alert("Resetting..."); const u = {}; globalSettings.forEach(i => { if (i.type === 'Special') u[`menu_settings/${i.id}/type`] = 'None'; u[`menu_settings/${i.id}/count`] = (i.count === -1 ? -1 : 0); }); u['system/last_reset'] = t; db.ref().update(u); } }); }
 function renderConfigTable(list) { const itemsToRender = list || globalSettings; const tbody = document.getElementById('config-table-body'); tbody.innerHTML = itemsToRender.map(i => { const safeId = escapeId(i.id); return `<tr class="hover:bg-gray-50 border-b border-gray-100"><td class="p-4 font-bold text-gray-700 text-sm">${i.name}</td><td class="p-4 text-center"><button onclick="toggleType('${safeId}')" class="px-3 py-1 rounded text-xs font-bold w-20 ${i.type === 'Default' ? 'bg-blue-100 text-blue-700' : (i.type === 'Special' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-200 text-gray-500')}">${i.type}</button></td><td class="p-4 flex gap-1 justify-center">${[0, 1, 2, 3, 4, 5, 6].map(d => `<button onclick="toggleDay('${safeId}',${d})" class="w-6 h-6 rounded text-[10px] font-bold ${String(i.days || "").split(',').includes(String(d)) ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-500'}">${['S', 'M', 'T', 'W', 'T', 'F', 'S'][d]}</button>`).join('')}</td></tr>` }).join(''); }
