@@ -38,7 +38,8 @@ db.ref('config/tv_state').on('value', snap => {
 });
 
 function initTV() {
-    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), 1000);
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
     db.ref('config/tv_state').on('value', snap => {
         const s = snap.val() || {};
         const root = document.documentElement;
@@ -63,28 +64,51 @@ function initTV() {
 function renderWall(items) {
     const container = document.getElementById('menu-wall');
     container.innerHTML = '';
-    container.style.fontSize = "18px";
-    let grouped = {};
+    const grouped = {};
     items.forEach(i => {
         if (!grouped[i.category]) grouped[i.category] = [];
         grouped[i.category].push(i);
     });
-    Object.keys(grouped).sort().forEach(cat => {
+
+    const categories = Object.keys(grouped).sort();
+    container.className = items.length > 20 ? 'menu-dense' : (items.length > 12 ? 'menu-compact' : 'menu-spacious');
+
+    if (categories.length === 0) {
+        container.innerHTML = `
+            <div class="empty-menu">
+                <div>
+                    <i class="fa-solid fa-mug-hot"></i>
+                    <strong>Menu coming soon</strong>
+                </div>
+            </div>`;
+        return;
+    }
+
+    categories.forEach(cat => {
         const card = document.createElement('div');
         card.className = 'category-container';
-        let rows = grouped[cat].map(item => {
+        const rows = grouped[cat].map(item => {
             const isOut = item.count === 0;
             return `<div class="item-row ${isOut ? 'opacity-20 grayscale' : ''}"><span class="item-name">${item.name}</span><span class="item-price">€${Number(item.price).toFixed(2)}</span></div>`;
         }).join('');
-        card.innerHTML = `<h2 class="category-header theme-text">${cat}</h2><div>${rows}</div>`;
+        card.innerHTML = `<h2 class="category-header theme-text">${cat}</h2><div class="category-items">${rows}</div>`;
         container.appendChild(card);
     });
-    setTimeout(() => {
-        const viewport = document.getElementById('view-port');
-        let fontSize = 18;
-        while ((container.scrollHeight > viewport.offsetHeight || container.scrollWidth > viewport.offsetWidth) && fontSize > 8) {
-            fontSize -= 0.5;
-            container.style.fontSize = fontSize + "px";
-        }
-    }, 100);
+}
+
+function updateDateTime() {
+    const now = new Date();
+    const clock = document.getElementById('clock');
+    const date = document.getElementById('current-date');
+
+    if (clock) {
+        clock.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+    if (date) {
+        date.innerText = now.toLocaleDateString('en-IE', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long'
+        });
+    }
 }

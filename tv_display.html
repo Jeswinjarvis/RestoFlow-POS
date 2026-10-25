@@ -16,21 +16,32 @@
 
     <script src="js/theme-manager.js"></script>
     <script>ThemeManager.init('tv_display');</script>
+    <link rel="stylesheet" href="css/themes/classic/tv_display.css?v=20261025-1">
 </head>
 
 <body onload="initTV()">
     <div class="bg-animate"></div>
-    <div class="flex flex-col h-full w-full p-6 pb-16">
-        <header id="main-header" class="flex justify-between items-center mb-6 z-20 shrink-0">
-            <div>
-                <h1 class="text-5xl font-black tracking-tighter">INDIAN COFFEE HOUSE</h1>
-                <p class="text-[12px] tracking-[0.6em] theme-text uppercase font-bold">Authentic Kerala • Athlone</p>
+    <div class="tv-shell">
+        <header id="main-header">
+            <div class="brand-block">
+                <h1>INDIAN COFFEE HOUSE</h1>
+                <p class="brand-tagline theme-text">Authentic Kerala <span>•</span> Athlone</p>
             </div>
-            <div id="clock" class="text-4xl font-bold font-mono">00:00</div>
+            <div class="clock-panel">
+                <span class="open-label"><i class="fa-solid fa-circle"></i> Open today</span>
+                <div id="clock">00:00</div>
+                <div id="current-date">Loading date</div>
+            </div>
         </header>
-        <div id="view-port" class="flex-1 w-full overflow-hidden">
+
+        <main id="view-port">
+            <div class="menu-heading">
+                <span class="menu-kicker">Freshly prepared</span>
+                <h2>Today's Menu</h2>
+                <div class="heading-rule"></div>
+            </div>
             <div id="menu-wall"></div>
-        </div>
+        </main>
     </div>
     <div class="ticker-wrap">
         <div id="ticker-msg" class="ticker">Welcome!</div>
@@ -40,7 +51,7 @@
         class="fixed top-2 right-2 text-white/20 text-[10px] font-bold uppercase pointer-events-none z-50 animate-pulse">
         Click for Fullscreen</div>
 
-    <script src="js/tv_display.js"></script>
+    <script src="js/tv_display.js?v=20261025-1"></script>
 </body>
 
 </html>
