@@ -197,11 +197,14 @@ body {
 
 #menu-wall {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(34rem, 100%), 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex-direction: initial;
+    flex-wrap: initial;
     align-items: stretch;
     align-content: start;
     gap: clamp(1.25rem, 1.8vw, 2.75rem);
     width: min(100%, 2600px);
+    height: auto;
     margin-inline: auto;
 }
 
@@ -209,6 +212,8 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: none;
     min-width: 0;
     overflow: hidden;
     padding: clamp(1.5rem, 2.1vw, 3.25rem);
@@ -235,6 +240,8 @@ body {
     display: flex;
     align-items: center;
     gap: 0.45em;
+    padding-left: 0;
+    border-left: 0;
     margin: 0 0 clamp(1rem, 1.5vw, 2rem);
     text-transform: uppercase;
     font-size: clamp(2.1rem, 3vw, 4.5rem);
